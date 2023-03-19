@@ -1,28 +1,28 @@
 library("ggplot2")
 
-df1 = read.csv("C:/Users/USER/Desktop/Math Project/VICTIMS_OF_KA_0.csv")
+Data_Set = read.csv("C:/Users/USER/Desktop/Math Project/VICTIMS_OF_KA_0.csv")
 
-
-states = unique(df1$STATE.UT)
+#retrieving the unique states name in the Data Set
+states = unique(Data_Set$STATE.UT)
 
 getData <- function(year){
   total_crimes = c()
-  
+  # traversing the data set on the column of states
   for(x in states)
-    {
+  {
     
-      data = subset(df1, df1$STATE.UT == x & df1$YEAR == year & df1$Pupose == "Total")
-      
-      k = data$Grand.Total
-      
-      if(length(k) == 0)
-      {
-         k = 0
-      }
-      
-      k = log1p(k)
-      
-      total_crimes = c(total_crimes, k)
+    data = subset(Data_Set, Data_Set$STATE.UT == x & Data_Set$YEAR == year & Data_Set$Pupose == "Total")
+    # taking the grand Total value of the selected Data Frame for Ploting of the graph
+    k = data$Grand.Total
+    
+    if(length(k) == 0)
+    {
+      k = 0
+    }
+    
+    k = log1p(k)
+    
+    total_crimes = c(total_crimes, k)
   }
   return(total_crimes)
   
@@ -42,7 +42,7 @@ data_2011 = getData(2011)
 data_2012 = getData(2012)
 
 
-df = data.frame(
+data_frame = data.frame(
   "states" = states,
   "Y2001" = data_2001,
   "Y2002" = data_2002,
@@ -58,28 +58,28 @@ df = data.frame(
   "Y2012" = data_2012
 )
 
-df$id = 1:35
+data_frame$id = 1:35
 
 years = 2001:2012
 
 
-label_data = df
+label_data = data_frame
 number_of_bar <- nrow(label_data)
 angle <-  90 - 360 * (label_data$id) /number_of_bar
 label_data$hjust<-ifelse( angle < -90, 1, 0)
 # this for the angle of states labels
 label_data$angle<-ifelse(angle < -90,270.082,270.22)
-label_data$dist = nchar(df$states)/10
+label_data$dist = nchar(data_frame$states)/10
 
 #==========================================================
 x = 1:35
 
 # for every year, change this y2012 according to the year
 
-df = df[order(df$Y2012), ]
+data_frame = data_frame[order(data_frame$Y2012), ]
 
-p = ggplot(df, aes(x = x, y = Y2012)) + 
-  geom_bar(stat="identity", colour = df$Y2012) +
+p = ggplot(data_frame, aes(x = x, y = Y2012)) + 
+  geom_bar(stat="identity", colour = data_frame$Y2012) +
   ylim(-3, 20)+
   theme_minimal() +
   theme(
@@ -88,11 +88,10 @@ p = ggplot(df, aes(x = x, y = Y2012)) +
     panel.grid = element_blank(),
     plot.margin = unit(rep(-1, 5),"cm")     # This remove unnecessary margin around plot
   ) +
-  geom_text(data = label_data, aes(x=id, y=  12 - dist, label=df$states)
+  geom_text(data = label_data, aes(x=id, y=  12 - dist, label=data_frame$states)
             , color="black", fontface="bold",alpha=0.6, show.legend = TRUE,
             size=4, angle= label_data$angle, inherit.aes = FALSE )+
   geom_text(aes(x = 20, y = -1, label = "2012"), color="red", fontface="bold",alpha=0.6, 
             size=5)
 #printing bar
 p
-
