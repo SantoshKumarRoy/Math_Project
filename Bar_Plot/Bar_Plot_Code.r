@@ -2,12 +2,12 @@ library("ggplot2")
 
 Data_Set = read.csv("C:/Users/USER/Desktop/Math Project/VICTIMS_OF_KA_0.csv")
 
-#retrieving the unique states name in the Data Set
+#retrieving the unique states name from the Data Set
 states = unique(Data_Set$STATE.UT)
 
 getData <- function(year){
   total_crimes = c()
-  # traversing the data set on the column of states
+  # traversing in the Data Set with the unique States Name for selecting the rows with the certain conditions
   for(x in states)
   {
     
